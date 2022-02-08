@@ -1,0 +1,39 @@
+services:
+  db:
+    restart: always
+    image: postgres
+    container_name: postgres-lab3
+    volumes:
+      - ./data/db:/var/lib/postgresql/data  
+    environment:
+      POSTGRES_USER: panuvit
+      POSTGRES_PASSWORD: Vanthree0911
+      POSTGRES_DB: lab3_db
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-lab3
+    restart: always
+    volumes:
+      - ./data/pgadmin-data:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: panuvit.chantara@ait.asia
+      PGADMIN_DEFAULT_PASSWORD: Vanthree0911
+    ports:
+      - 5050:80
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app:/app
+    ports:
+      - 8000:8000
+    environment:
+      - POSTGRES_NAME=lab3_db
+      - POSTGRES_USER=panuvit
+      - POSTGRES_PASSWORD=Vanthree0911
+    depends_on:
+      - db
